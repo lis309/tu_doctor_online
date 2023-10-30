@@ -1,11 +1,19 @@
-import logo from './logo.svg';
+import React, {Fragment} from 'react';
+import {BroserRouter as Router, Route, Routes} from 'react-router-dom';
 import './App.css';
+import Login from './Paginas/login.JS';
 
 function App() {
   return (
-    <div className="App">
+    <Fragment>
+      <Router>
+        <Routes>
+          <Route path='/' exact element = {<Login/>}>
 
-    </div>
+          </Route>
+        </Routes>
+      </Router>
+    </Fragment>
   );
 }
 
