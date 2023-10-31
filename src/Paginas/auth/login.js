@@ -3,14 +3,14 @@ import { Link } from 'react-router-dom';
 
 const Login = () => {
     return(
-        <div className="login-box">
+        <div className="login-box mx-auto mt-5">
         <div className="login-logo">
-            <a href="../../index2.html"><b>Iniciar</b> Sesión</a>
+            <Link to="#"><b>Iniciar</b> Sesión</Link>
         </div>
         {/* /.login-logo */}
         <div className="card">
             <div className="card-body login-card-body">
-                <p className="login-box-msg">Bienvenido, ingres sus credenciales</p>
+                <p className="login-box-msg">Bienvenido, ingrese sus credenciales</p>
                 <form action="../../index3.html" method="post">
                     <div className="input-group mb-3">
                         <input type="email" 
@@ -38,19 +38,17 @@ const Login = () => {
                     </div>
                 </form>
                 <div className="social-auth-links text-center mb-3">
-                    <p>- OR -</p>
                     <Link to="#" className="btn btn-block btn-primary">
-                    <i className="fab fa-facebook mr-2" /> Ingresar
+                    <i/> Ingresar
                     </Link>
                     <Link to="#" className="btn btn-block btn-danger">
-                    <i className="fab fa-google-plus mr-2" /> Crear cuenta
+                    <i/> Crear cuenta
                     </Link>
                 </div>
             </div>
             {/* /.login-card-body */}
         </div>
         </div>
-
     );
 }
 

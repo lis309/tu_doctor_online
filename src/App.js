@@ -1,16 +1,17 @@
 import React, {Fragment} from 'react';
-import {BroserRouter as Router, Route, Routes} from 'react-router-dom';
-import './App.css';
-import Login from './Paginas/login.JS';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Login from './Paginas/auth/login';
+import Dashboard from './Paginas/auth/dashboard';
+import Registration from './Paginas/auth/registration';
 
 function App() {
   return (
     <Fragment>
       <Router>
         <Routes>
-          <Route path='/' exact element = {<Login/>}>
-
-          </Route>
+          <Route path='/' exact element = {<Login/>}></Route>
+          <Route path='/dashboard' exact element = {<Dashboard/>}></Route>
+          <Route path='/registro' exact element = {<Registration/>}></Route>
         </Routes>
       </Router>
     </Fragment>
