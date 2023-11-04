@@ -1,6 +1,6 @@
 import React, {Fragment} from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Login from './Paginas/auth/login';
+import Login from './Paginas/auth/login.JS';
 import Dashboard from './Paginas/auth/dashboard';
 import Registration from './Paginas/auth/registration';
 

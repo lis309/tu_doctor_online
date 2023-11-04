@@ -36,32 +36,6 @@
       "id": 5
     }
   ],
-  "CitaDisponible": [
-    {
-      "id": 1,
-      "fecha": "2023-11-01",
-      "hora": "10:00 AM",
-      "estado": "Activa"
-    },
-    {
-      "id": 2,
-      "fecha": "2023-13-01",
-      "hora": "10:00 AM",
-      "estado": "Activa"
-    },
-    {
-      "id": 3,
-      "fecha": "2023-11-05",
-      "hora": "10:30 AM",
-      "estado": "Activa"
-    },
-    {
-      "id": 4,
-      "fecha": "2023-11-10",
-      "hora": "10:30 AM",
-      "estado": "Activa"
-    }
-  ],
   "AgendaDisponible": [
     {
       "id": 1,
@@ -120,36 +94,6 @@
       "correo": "luis.garcia@example.com"
     }
   ],
-  "CitaPaciente": [
-    {
-      "id": 1,
-      "fecha": "2023-11-01",
-      "hora": "10:00 AM",
-      "id_pacienteFK": 1,
-      "id_medicoFK": 101
-    },
-    {
-      "id": 2,
-      "fecha": "2023-13-01",
-      "hora": "10:00 AM",
-      "id_pacienteFK": 1,
-      "id_medicoFK": 103
-    },
-    {
-      "id": 3,
-      "fecha": "2023-11-05",
-      "hora": "10:30 AM",
-      "id_pacienteFK": 2,
-      "id_medicoFK": 102
-    },
-    {
-      "id": 4,
-      "fecha": "2023-11-10",
-      "hora": "10:30 AM",
-      "id_pacienteFK": 3,
-      "id_medicoFK": 103
-    }
-  ],
   "Medico": [
     {
       "id": 101,
@@ -173,32 +117,43 @@
       "correo": "jorge.ramirez@example.com"
     }
   ],
-  "CitaMedico": [
+  "Cita": [
     {
-      "id": 201,
-      "fecha": "2023-11-02",
+      "id": 1,
+      "fecha": "2023-11-01",
       "hora": "10:00 AM",
+      "idAutorizacionFK": 1,
+      "tipoCita": "Cardiologia",
       "id_pacienteFK": 1,
-      "id_medicoFK": 101
+      "id_medicoFK": 101,
+      "estado": "activa"
     },
     {
-      "id": 202,
-      "fecha": "2023-13-02",
+      "id": 2,
+      "fecha": "2023-13-01",
       "hora": "10:00 AM",
+      "idAutorizacionFK": 2,
+      "tipoCita": "Pediatría",
       "id_pacienteFK": 1,
-      "id_medicoFK": 103
+      "id_medicoFK": 102,
+      "estado": "activa"
     },
     {
-      "id": 203,
-      "fecha": "2023-11-06",
+      "id": 3,
+      "fecha": "2023-11-05",
       "hora": "10:30 AM",
+      "idAutorizacionFK": 2,
+      "tipoCita": "Dermatologia",
       "id_pacienteFK": 2,
-      "id_medicoFK": 102
+      "id_medicoFK": 103,
+      "estado": "activa"
     },
     {
-      "id": 204,
-      "fecha": "2023-11-12",
+      "id": 4,
+      "fecha": "2023-11-10",
       "hora": "10:30 AM",
+      "idAutorizacionFK": 3,
+      "tipoCita": "Dermatologia",
       "id_pacienteFK": 3,
       "id_medicoFK": 103
     }
