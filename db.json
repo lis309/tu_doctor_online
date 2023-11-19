@@ -5,61 +5,80 @@
       "nombre": "John",
       "apellido": "Doe",
       "email": "john.doe@example.com",
-      "password": "secreto123"
+      "password": "secreto123",
+      "rol": 1
     },
     {
       "id": 2,
       "nombre": "Alice",
       "apellido": "Johnson",
       "email": "alice.johnson@example.com",
-      "password": "password123"
+      "password": "password123",
+      "rol": 1
     },
     {
       "id": 3,
       "nombre": "Jane",
       "apellido": "Smith",
       "email": "jane.smith@example.com",
-      "password": "contrasena123"
+      "password": "contrasena123",
+      "rol": 1
     },
     {
       "nombre": "Liseth",
       "apellido": "Rincon",
       "email": "sena@gmail.com",
       "password": "123455",
-      "id": 4
-    },
-    {
-      "nombre": "Liseth",
-      "apellido": "Rincon",
-      "email": "sena@gmail.com",
-      "password": "123455",
-      "id": 5
-    }
-  ],
-  "AgendaDisponible": [
-    {
-      "id": 1,
-      "fecha": "2023-11-01",
-      "hora": "10:00 AM",
-      "estado": "Activa"
-    },
-    {
-      "id": 2,
-      "fecha": "2023-13-01",
-      "hora": "10:00 AM",
-      "estado": "Activa"
-    },
-    {
-      "id": 3,
-      "fecha": "2023-11-05",
-      "hora": "10:30 AM",
-      "estado": "Activa"
-    },
-    {
       "id": 4,
-      "fecha": "2023-11-10",
-      "hora": "10:30 AM",
-      "estado": "Activa"
+      "rol": 2
+    },
+    {
+      "nombre": "Lira",
+      "apellido": "Suarez",
+      "email": "lira@gmail.com",
+      "password": "123456",
+      "id": 5,
+      "rol": 2
+    },
+    {
+      "nombre": "Sara",
+      "apellido": "Lara",
+      "email": "lsara@gmail.com",
+      "password": "123456",
+      "id": 6,
+      "rol": 2
+    },
+    {
+      "nombre": "Jose",
+      "apellido": "Perez",
+      "email": "jose@gmail.com",
+      "password": "123456",
+      "id": 7,
+      "rol": 2
+    },
+    {
+      "nombre": "Luisa",
+      "apellido": "Jimenez",
+      "email": "lu@gmail.com",
+      "password": "123456789",
+      "id": 8,
+      "rol": 2
+    },
+    {
+      "nombre": "Lis",
+      "apellido": "Rincon",
+      "email": "suga@gmail.com",
+      "password": "1234567",
+      "id": 9,
+      "rol": 2
+    },
+    {
+      "nombre": "Eylin",
+      "apellido": "Rincón",
+      "email": "eylinrincon@gmail.com",
+      "password": "123456",
+      "rol": 2,
+      "id": 10
     }
   ],
   "Paciente": [
@@ -119,43 +138,232 @@
   ],
   "Cita": [
     {
-      "id": 1,
       "fecha": "2023-11-01",
       "hora": "10:00 AM",
-      "idAutorizacionFK": 1,
+      "idAutorizacionFK": 123456789,
       "tipoCita": "Cardiologia",
       "id_pacienteFK": 1,
       "id_medicoFK": 101,
-      "estado": "activa"
+      "estado": "Activa",
+      "id": 1
     },
     {
-      "id": 2,
-      "fecha": "2023-13-01",
+      "fecha": "2023-12-01",
       "hora": "10:00 AM",
-      "idAutorizacionFK": 2,
+      "idAutorizacionFK": 321654987,
       "tipoCita": "Pediatría",
       "id_pacienteFK": 1,
       "id_medicoFK": 102,
-      "estado": "activa"
+      "estado": "Activa",
+      "id": 2
     },
     {
-      "id": 3,
       "fecha": "2023-11-05",
       "hora": "10:30 AM",
-      "idAutorizacionFK": 2,
+      "idAutorizacionFK": 951738246,
       "tipoCita": "Dermatologia",
       "id_pacienteFK": 2,
       "id_medicoFK": 103,
-      "estado": "activa"
+      "estado": "Activa",
+      "id": 3
     },
     {
-      "id": 4,
       "fecha": "2023-11-10",
       "hora": "10:30 AM",
-      "idAutorizacionFK": 3,
+      "idAutorizacionFK": 741852963,
       "tipoCita": "Dermatologia",
       "id_pacienteFK": 3,
-      "id_medicoFK": 103
+      "id_medicoFK": 103,
+      "estado": "Activa",
+      "id": 4
+    },
+    {
+      "fecha": "2023-11-01",
+      "hora": "9:30 AM",
+      "idAutorizacionFK": 123456789,
+      "tipoCita": "Cardiología",
+      "id_pacienteFK": 0,
+      "id_medicoFK": 0,
+      "estado": "En espera",
+      "id": 5
+    },
+    {
+      "fecha": "2023-11-22",
+      "hora": "10:00 AM",
+      "idAutorizacionFK": 123456789,
+      "tipoCita": "Pediatría",
+      "id_pacienteFK": 0,
+      "id_medicoFK": 102,
+      "estado": "Activa",
+      "id": 6
+    },
+    {
+      "fecha": "2023-12-30",
+      "hora": "6:00 AM",
+      "idAutorizacionFK": 951738246,
+      "tipoCita": "Dermatología",
+      "id_pacienteFK": 0,
+      "id_medicoFK": 103,
+      "estado": "Activa",
+      "id": 7
+    },
+    {
+      "fecha": "2023-11-30",
+      "hora": "7:30 AM",
+      "idAutorizacionFK": 123456789,
+      "tipoCita": "Cardiología",
+      "id_pacienteFK": 0,
+      "id_medicoFK": 101,
+      "estado": "Activa",
+      "id": 8
+    },
+    {
+      "fecha": "2023-12-05",
+      "hora": "10:30 AM",
+      "idAutorizacionFK": 123456789,
+      "tipoCita": "Pediatría",
+      "id_pacienteFK": 0,
+      "id_medicoFK": 102,
+      "estado": "Activa",
+      "id": 9
+    },
+    {
+      "fecha": "2023-11-19",
+      "hora": "1:30 PM",
+      "idAutorizacionFK": 123456789,
+      "tipoCita": "Dermatología",
+      "id_pacienteFK": 0,
+      "id_medicoFK": 103,
+      "estado": "Activa",
+      "id": 10
+    },
+    {
+      "fecha": "2023-11-21",
+      "hora": "7:00 AM",
+      "idAutorizacionFK": 321654987,
+      "tipoCita": "Cardiología",
+      "id_pacienteFK": 0,
+      "id_medicoFK": 101,
+      "estado": "Activa",
+      "id": 11
+    },
+    {
+      "fecha": "2023-11-29",
+      "hora": "7:30 AM",
+      "idAutorizacionFK": 741852963,
+      "tipoCita": "Pediatría",
+      "id_pacienteFK": 0,
+      "id_medicoFK": 102,
+      "estado": "Activa",
+      "id": 12
+    },
+    {
+      "fecha": "2023-11-21",
+      "hora": "12:00 PM",
+      "idAutorizacionFK": 123456789,
+      "tipoCita": "Dermatología",
+      "id_pacienteFK": 0,
+      "id_medicoFK": 103,
+      "estado": "Activa",
+      "id": 13
+    },
+    {
+      "fecha": "2023-11-22",
+      "hora": "7:30 AM",
+      "idAutorizacionFK": 123456789,
+      "tipoCita": "Cardiología",
+      "id_pacienteFK": 0,
+      "id_medicoFK": 101,
+      "estado": "Activa",
+      "id": 14
+    },
+    {
+      "fecha": "2023-11-29",
+      "hora": "7:00 AM",
+      "idAutorizacionFK": 123456789,
+      "tipoCita": "Pediatría",
+      "id_pacienteFK": 0,
+      "id_medicoFK": 102,
+      "estado": "Activa",
+      "id": 15
+    },
+    {
+      "fecha": "2023-11-28",
+      "hora": "7:30 AM",
+      "idAutorizacionFK": 123456789,
+      "tipoCita": "Cardiología",
+      "id_pacienteFK": 0,
+      "id_medicoFK": 101,
+      "estado": "Activa",
+      "id": 16
+    },
+    {
+      "fecha": "2023-11-28",
+      "hora": "7:00 AM",
+      "idAutorizacionFK": 123456789,
+      "tipoCita": "Pediatría",
+      "id_pacienteFK": 0,
+      "id_medicoFK": 102,
+      "estado": "Activa",
+      "id": 17
+    },
+    {
+      "fecha": "2023-11-28",
+      "hora": "6:30 AM",
+      "idAutorizacionFK": 123456789,
+      "tipoCita": "Pediatría",
+      "id_pacienteFK": 0,
+      "id_medicoFK": 102,
+      "estado": "Activa",
+      "id": 18
+    },
+    {
+      "fecha": "2023-11-30",
+      "hora": "7:00 AM",
+      "idAutorizacionFK": 123456789,
+      "tipoCita": "Dermatología",
+      "id_pacienteFK": 0,
+      "id_medicoFK": 103,
+      "estado": "Activa",
+      "id": 19
+    },
+    {
+      "fecha": "2023-11-29",
+      "hora": "12:00 PM",
+      "idAutorizacionFK": 123456789,
+      "tipoCita": "Cardiología",
+      "id_pacienteFK": 0,
+      "id_medicoFK": 101,
+      "estado": "Activa",
+      "id": 20
+    },
+    {
+      "fecha": "2023-11-22",
+      "hora": "7:00 AM",
+      "idAutorizacionFK": 123456789,
+      "tipoCita": "Pediatría",
+      "id_pacienteFK": 0,
+      "id_medicoFK": 102,
+      "estado": "Activa",
+      "id": 21
+    }
+  ],
+  "Autorizacion": [
+    {
+      "numero_Autorizacion": 123456789,
+      "id_pacienteFK": 1
+    },
+    {
+      "numero_Autorizacion": 321654987,
+      "id_pacienteFK": 3
+    },
+    {
+      "numero_Autorizacion": 741852963,
+      "id_pacienteFK": 2
+    },
+    {
+      "numero_Autorizacion": 951738246,
+      "id_pacienteFK": 1
     }
   ]
 }

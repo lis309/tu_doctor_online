@@ -1,0 +1,191 @@
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+
+body, html {
+    background-color: #f5f5f5; 
+    margin: 0;
+    height: 100%;
+    font-family: Arial, sans-serif;
+}
+
+#root {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f5f5f5;
+}
+
+.notifications-popup {
+    position: absolute;
+    top: 40px;
+    right: 0;
+    width: 250px;
+    background-color: white;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    padding: 10px;
+    z-index: 100;
+    list-style-type: disc; /* Agregado para mostrar viñetas */
+    margin: 10px; /* Ajusta el margen según sea necesario */
+}
+
+.appointment-page {
+    display: flex;
+    justify-content: space-between; /* Alinea los hijos a los extremos del contenedor */
+    align-items: center;
+    width: 70%; /* O el ancho que prefieras */
+    max-width: 1000px; /* Asegura que el contenedor no sea demasiado ancho en pantallas grandes */
+    margin: auto; /* Centra el contenedor en la página */
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.header {
+    position: absolute;
+    top: 20px;
+    right: 20px; /* Cambiado de 'left' a 'right' */
+    display: flex;
+    align-items: center;
+}
+
+.icon-button {
+    padding: 10px 15px;
+    font-size: 15px; /* Ajuste para que coincida con el tamaño del texto del botón */
+    color: white;
+    background-color: #4d82bc; /* Verde agradable para el botón de notificaciones */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-left: 10px; /* Espacio entre botones, si es necesario */
+    transition: background-color 0.3s ease;
+}
+
+.icon-button span.material-icons {
+    font-size: 12px; /* Tamaño del ícono */
+}
+
+/* Asegúrate de que el botón de cerrar sesión tenga el mismo estilo */
+.logout .icon-button {
+    background-color: #d9534f; /* Rojo para el botón de cerrar sesión */
+}
+
+.icon-button:hover {
+    background-color: #4170a1;
+}
+
+.icon-button:active {
+    background-color: #4d82bc;
+}
+
+/* Estilos para el botón de cerrar sesión, si quieres que sea diferente */
+.logout .icon-button {
+    background-color: #d9534f; /* Un rojo para indicar una acción de 'cerrar' o 'salir' */
+    text-decoration: none;
+    color: white;
+}
+
+.logout .icon-button:hover {
+    background-color: #c9302c;
+    text-decoration: none;
+    color: white;
+}
+
+.logout .icon-button:active {
+    background-color: #ac2925;
+    text-decoration: none;
+    color: white;
+}
+
+.welcome {
+    position: fixed;
+    top: 300px;
+    left: 80px;
+    width: 75%;
+    align-items: flex-start;
+    text-align: left;
+    margin-bottom: 20px;
+    margin-left: -20px;
+    padding-right: 50%;
+    z-index: 20; /* Asegura que el elemento 'welcome' esté por encima de otros elementos */
+}
+
+.welcome h2 {
+    margin-bottom: 10px; /* Espacio inferior para separar el título del párrafo */
+}
+
+#scheduleButton {
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    background-color: #4d82bc; /* Un verde agradable */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    outline: none; /* Elimina el contorno al hacer clic */
+    margin-left: 12%;
+}
+
+#scheduleButton:hover {
+    background-color: #4170a1; /* Un verde un poco más oscuro para el efecto hover */
+}
+
+#scheduleButton:active {
+    background-color: #4d82bc; /* Un verde aún más oscuro para cuando se hace clic */
+}
+
+#scheduleButton:focus {
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.5); /* Un resplandor azul cuando el botón está enfocado */
+}
+
+.appointments-list {
+    align-items: right;
+    margin-left: 220px;
+    width: 80%; /* Establece un ancho fijo para el formulario */
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1); /* Sombra alrededor del formulario */
+    border-radius: 4px; /* Bordes redondeados para el formulario */
+}
+
+.appointment-item {
+    border: 1px solid #ddd;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    background-color: #f8f8f8;
+    width: 100%;
+}
+
+.appointment-item div {
+    margin: 5px 0;
+}
+
+.appointment-item label {
+    margin-right: 10px;
+}
+
+.appointment-item select {
+    padding: 5px;
+    margin-right: 10px;
+}
+
+.appointment-item button {
+    width: 100%; /* Ocupa todo el ancho del formulario */
+    height: 46px;
+    padding: 10px;
+    margin-top: 20px; /* Espacio entre los campos */
+    border: 1px solid #ddd; /* Borde para los campos de entrada */
+    border-radius: 4px; /* Bordes redondeados para los campos de entrada */
+    box-sizing: border-box; /* Asegura que el padding no afecte el ancho */
+    background-color: #4d82bc; /* Color de fondo para el botón */
+    color: white; /* Texto blanco para el botón */
+    cursor: pointer; /* Cambia el cursor al pasar por encima del botón */
+    transition: background-color 0.3s ease; /* Agregado para la transición de color de fondo */
+}
+
+.appointment-item button:hover {
+    background-color: #4170a1;
+}
+

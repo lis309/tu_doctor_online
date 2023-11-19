@@ -1,16 +1,19 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';  // Importa useNavigate en lugar de useHistory
 import axios from 'axios';
 
-const Registration = ({ history }) => {
+const Registration = () => {
     const [formData, setFormData] = useState({
         nombre: '',
         apellido: '',
         email: '',
         password: '',
+        rol: 2
     });
 
     const [error, setError] = useState('');
+
+    const navigate = useNavigate();  // Usa useNavigate en lugar de useHistory
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -20,23 +23,36 @@ const Registration = ({ history }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (formData.nombre === '' || formData.apellido === '' || formData.email === '' || formData.password === '') {
+        if ((formData.nombre === '' || formData.apellido === '' || formData.email === '' || formData.password === '') && formData.rol === 2) {
             setError('Todos los campos son obligatorios');
         } else if (formData.password.length < 6) {
             setError('La contraseña debe contener al menos 6 caracteres');
         } else {
             try {
-                const { nombre, apellido, email, password } = formData;
-                await axios.post('http://localhost:5000/user/', { nombre, apellido, email, password });
+                const { nombre, apellido, email, password, rol } = formData; // Asegúrate de incluir 'rol' en la desestructuración
+                await axios.post('http://localhost:5000/user/', { nombre, apellido, email, password, rol });
+
+                // Restablecer el estado del formulario a sus valores iniciales
+                setFormData({
+                    nombre: '',
+                    apellido: '',
+                    email: '',
+                    password: ''
+                });
+
+                // Limpiar cualquier mensaje de error
+                setError('');
+
+                alert('Registro exitoso!!');
 
                 // Si la solicitud es exitosa, navega a la ruta de éxito
-                history.push('/'); // Reemplaza '/ruta-de-exito' con la ruta que desees
+                navigate('/Login');  // Usa navigate en lugar de history.push
+
             } catch (error) {
-                console.error('Error al registrar', error.response.data);
+                console.error('Error al registrar', error);
             }
         }
     };
-
 
     return (
         <div className="login-box mx-auto mt-5">
@@ -58,52 +74,58 @@ const Registration = ({ history }) => {
                             />
                             <div className="input-group-append">
                                 <div className="input-group-text">
-                                <i className="fas fa-user" />
+                                    <i className="fas fa-user" />
                                 </div>
                             </div>
                         </div>
                         <div className="input-group mb-3">
-                            <input type="text" 
-                                className="form-control" 
-                                placeholder="Apellido" 
-                                name='apellido'
+                            <input
+                                type="text"
+                                className="form-control"
+                                placeholder="Apellido"
+                                name="apellido"
                                 value={formData.apellido}
-                                onChange={handleChange}/>
+                                onChange={handleChange}
+                            />
                             <div className="input-group-append">
                                 <div className="input-group-text">
-                                <i className="fas fa-user" />
+                                    <i className="fas fa-user" />
                                 </div>
                             </div>
                         </div>
                         <div className="input-group mb-3">
-                            <input type="email" 
-                                className="form-control" 
-                                placeholder="Email" 
-                                name='email'
+                            <input
+                                type="email"
+                                className="form-control"
+                                placeholder="Email"
+                                name="email"
                                 value={formData.email}
-                                onChange={handleChange}/>
+                                onChange={handleChange}
+                            />
                             <div className="input-group-append">
                                 <div className="input-group-text">
-                                <span className="fas fa-envelope" />
+                                    <span className="fas fa-envelope" />
                                 </div>
                             </div>
                         </div>
                         <div className="input-group mb-3">
-                            <input type="password" 
-                                className="form-control" 
+                            <input
+                                type="password"
+                                className="form-control"
                                 placeholder="Password"
-                                name='password'
+                                name="password"
                                 value={formData.password}
-                                onChange={handleChange}/>
+                                onChange={handleChange}
+                            />
                             <div className="input-group-append">
                                 <div className="input-group-text">
-                                <span className="fas fa-lock" />
+                                    <span className="fas fa-lock" />
                                 </div>
                             </div>
                         </div>
                         {error && <p className="text-danger">{error}</p>}
                         <div className="social-auth-links text-center mb-3">
-                            <button type="submit" to="" className="btn btn-block btn-primary">
+                            <button type="submit" className="btn btn-block btn-primary">
                                 <i /> Crear cuenta
                             </button>
                         </div>
@@ -112,6 +134,6 @@ const Registration = ({ history }) => {
             </div>
         </div>
     );
-};
+}
 
-export default (Registration);
+export default Registration;
