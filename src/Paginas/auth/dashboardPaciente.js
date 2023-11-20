@@ -3,61 +3,61 @@ import { Link } from 'react-router-dom';
 import '../../css/estilos.css';
 
 const Dashboard = () => {
-    const [isFormVisible, setFormVisible] = useState(false);
-    const [showNotifications, setShowNotifications] = useState(false);
-    const [availableSlots, setAvailableSlots] = useState([]);
-    const [selectedDate, setSelectedDate] = useState('');
-    const [selectedSlot, setSelectedSlot] = useState('');
-    const [authNum, setAuthNum] = useState('');
-    const [selectedSpecialty, setSelectedSpecialty] = useState('');
-    const [specialties, setSpecialties] = useState([]);
-    const [isSlotAvailable, setIsSlotAvailable] = useState(true);
-    const [, setIsFormValid] = useState(false); 
-    const [error, setError] = useState('');
-    const [notificationMessage, setNotificationMessage] = useState('');
-    // Estado para almacenar temporalmente el ID de la cita
-    const [temporaryAppointmentId, setTemporaryAppointmentId] = useState(null);
+  const [isFormVisible, setFormVisible] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [availableSlots, setAvailableSlots] = useState([]);
+  const [selectedDate, setSelectedDate] = useState('');
+  const [selectedSlot, setSelectedSlot] = useState('');
+  const [authNum, setAuthNum] = useState('');
+  const [selectedSpecialty, setSelectedSpecialty] = useState('');
+  const [specialties, setSpecialties] = useState([]);
+  const [isSlotAvailable, setIsSlotAvailable] = useState(true);
+  const [, setIsFormValid] = useState(false);
+  const [error, setError] = useState('');
+  const [notificationMessage, setNotificationMessage] = useState('');
+  // Estado para almacenar temporalmente el ID de la cita
+  const [temporaryAppointmentIds, setTemporaryAppointmentIds] = useState([]);
 
-    console.log(temporaryAppointmentId);
-    // Función para mostrar notificaciones
-    const toggleNotifications = async () => {
-        try {
+  // Función para mostrar notificaciones
+  const toggleNotifications = async () => {
+    try {
+      // Mostrar notificaciones solo si hay nuevas citas pendientes
+      if (temporaryAppointmentIds.length > 0) {
+        // Puedes personalizar el mensaje según tus necesidades
+        const newAppointmentMessage = `Tienes ${temporaryAppointmentIds.length} nuevas citas pendientes. ¡Revisa tu agenda!`;
+        setNotificationMessage(newAppointmentMessage);
 
-            if (temporaryAppointmentId) {
-                const response = await fetch(`http://localhost:5000/Cita/${temporaryAppointmentId}`);
-                const data = await response.json();
-                
-                console.log(data);
+        // Actualizar el estado de notificaciones para evitar mostrarla nuevamente
+        localStorage.setItem('notificationIds', JSON.stringify(temporaryAppointmentIds));
+      }
+      setShowNotifications(true);
 
-                if (response.ok) {
-                    const appointmentStatus = data.estado;
-                    
-                    // Mostrar notificaciones
-                    setShowNotifications(true);
+      // Limpiar la variable después de un tiempo
+      setTimeout(() => {
+        setNotificationMessage('');
+        setShowNotifications(false);
+      }, 5000);
+    } catch (error) {
+      console.error('Error en la llamada a la API:', error);
+    }
+  };
 
-                    // Verificar si el estado de la cita es "Activa"
-                    if (appointmentStatus === 'Activa') {
-                        // Mostrar el mensaje de notificación adicional
-                        setNotificationMessage('Tu cita fue aprobada, nos vemos pronto!!');
-                        // Limpiar la variable después de aprobar la cita
-                    }
-                }
-            } else {
-                // Mostrar notificaciones
-                setShowNotifications(true);
-                setNotificationMessage('No tienes notificaciones nuevas.');
-            }
+  // Función para limpiar notificaciones pasadas
+  const clearExpiredNotifications = () => {
+    const currentDate = new Date().toISOString().split("T")[0];
 
-            // Limpiar la variable después de un tiempo (puedes ajustar el tiempo según tus necesidades)
-            setTimeout(() => {
-                setNotificationMessage(''); // Limpiar el mensaje después de 5 segundos
-                setShowNotifications(false);
-            }, 5000); // Por ejemplo, limpiar después de 5 segundos
-        } catch (error) {
-            console.error('Error en la llamada a la API:', error);
-        }
-    };
+    // Filtrar IDs de citas que aún no han ocurrido
+    const validIds = temporaryAppointmentIds.filter((id) => {
+      const appointmentDate = new Date(id.fecha);
+      return appointmentDate >= currentDate;
+    });
 
+    // Actualizar el estado con los IDs válidos
+    setTemporaryAppointmentIds(validIds);
+
+    // Almacenar los IDs válidos en localStorage
+    localStorage.setItem('notificationIds', JSON.stringify(validIds));
+  };
 
 
     const toggleForm = () => {
@@ -196,9 +196,7 @@ const Dashboard = () => {
                         const newAppointmentId = responseData.id;
 
                         // Almacenar temporalmente el ID de la nueva cita
-                        setTemporaryAppointmentId(newAppointmentId);
-                        
-                        console.log(temporaryAppointmentId);
+                        setTemporaryAppointmentIds((prevIds) => [...prevIds, newAppointmentId]);
 
                         // Actualizar las citas registradas después de agendar la nueva cita
                         const updatedSlots = [...availableSlots, `${selectedDate} ${selectedSlot}`];
@@ -245,13 +243,19 @@ const Dashboard = () => {
     };
 
 
-
-
     useEffect(() => {
-        // Cuando el componente se monta, realiza la llamada a la API
+        // Al cargar el componente, recuperar los IDs almacenados en localStorage
+        const storedNotificationIds = JSON.parse(localStorage.getItem('notificationIds')) || [];
+        setTemporaryAppointmentIds(storedNotificationIds);
+      
+        // Al cargar el componente, limpiar notificaciones pasadas
+        clearExpiredNotifications();
+      
+        // Al cargar el componente, realiza la llamada a la API
         fetchBookedSlots();
         fetchSpecialties();
-    }, []);
+      }, []);
+      
 
     // Función para obtener todas las horas disponibles
     const getAllSlots = () => {
