@@ -12,57 +12,99 @@ const Dashboard = () => {
     const [selectedSpecialty, setSelectedSpecialty] = useState('');
     const [specialties, setSpecialties] = useState([]);
     const [isSlotAvailable, setIsSlotAvailable] = useState(true);
-    const [, setIsFormValid] = useState(false); 
+    const [, setIsFormValid] = useState(false);
     const [error, setError] = useState('');
-    const [notificationMessage, setNotificationMessage] = useState('');
-    // Estado para almacenar temporalmente el ID de la cita
-    const [temporaryAppointmentId, setTemporaryAppointmentId] = useState(null);
-
-    console.log(temporaryAppointmentId);
-    // Función para mostrar notificaciones
-    const toggleNotifications = async () => {
-        try {
-
-            if (temporaryAppointmentId) {
-                const response = await fetch(`http://localhost:5000/Cita/${temporaryAppointmentId}`);
-                const data = await response.json();
-                
-                console.log(data);
-
+    const [notifications, setNotifications] = useState([]);
+    const [appointments, setAppointments] = useState([]);
+    const userId = localStorage.getItem('userId');
+    
+    useEffect(() => {
+        // Obtener todas las citas
+        const fetchAppointments = async () => {
+            try {
+                const response = await fetch("http://localhost:5000/Cita");
+                const appointmentsData = await response.json();
+    
                 if (response.ok) {
-                    const appointmentStatus = data.estado;
-                    
-                    // Mostrar notificaciones
+                    setAppointments(appointmentsData);
+    
+                    // Filtrar citas con estado 'Activa' y del paciente actual
+                    const activePatientAppointments = appointmentsData.filter(appointment => (
+                        appointment.estado === 'Activa' && appointment.id_pacienteFK === parseInt(userId)
+                    ));
+    
+                    const newNotifications = activePatientAppointments.map(appointment => ({
+                        id: appointment.id,
+                        message: `Tu cita de ${appointment.tipoCita} fue aprobada, nos vemos pronto el día ${appointment.fecha}!!`
+                    }));
+    
+                    // Almacenar las notificaciones en el estado y localStorage
+                    setNotifications([...notifications, ...newNotifications]);
+                    localStorage.setItem('lastNotification', JSON.stringify(newNotifications[0]));
+    
+                    // Mostrar las notificaciones
                     setShowNotifications(true);
-
-                    // Verificar si el estado de la cita es "Activa"
-                    if (appointmentStatus === 'Activa') {
-                        // Mostrar el mensaje de notificación adicional
-                        setNotificationMessage('Tu cita fue aprobada, nos vemos pronto!!');
-                        // Limpiar la variable después de aprobar la cita
-                    }
+    
+                    // Limpiar la variable después de un tiempo
+                    setTimeout(() => {
+                        setNotifications([]);
+                        setShowNotifications(false);
+                        localStorage.removeItem('lastNotification');
+                    }, 5000);
+                } else {
+                    console.error('Error al obtener las citas:', appointmentsData.message || 'Error desconocido');
                 }
-            } else {
-                // Mostrar notificaciones
-                setShowNotifications(true);
-                setNotificationMessage('No tienes notificaciones nuevas.');
+            } catch (error) {
+                console.error('Error en la llamada a la API:', error);
             }
-
-            // Limpiar la variable después de un tiempo (puedes ajustar el tiempo según tus necesidades)
-            setTimeout(() => {
-                setNotificationMessage(''); // Limpiar el mensaje después de 5 segundos
-                setShowNotifications(false);
-            }, 5000); // Por ejemplo, limpiar después de 5 segundos
-        } catch (error) {
-            console.error('Error en la llamada a la API:', error);
+        };
+    
+        // Recuperar la última notificación almacenada en localStorage
+        const lastNotificationString = localStorage.getItem('lastNotification');
+        console.log('lastNotificationString:', lastNotificationString); // Agrega este registro
+    
+        // Verificar si lastNotificationString no es undefined y no es null antes de intentar parsearlo
+        if (lastNotificationString !== undefined && lastNotificationString !== null) {
+            const lastNotification = JSON.parse(lastNotificationString);
+            
+            // Si hay una última notificación, mostrarla al cargar la página
+            setNotifications([lastNotification]);
+            setShowNotifications(true);
         }
+    
+        fetchAppointments();
+    }, [userId, notifications]);
+    
+
+    const toggleNotifications = () => {
+        // Filtrar citas con estado 'Activa' y del paciente actual
+        const activePatientAppointments = appointments.filter(appointment => (
+            appointment.estado === 'Activa' && appointment.id_pacienteFK === parseInt(userId)
+        ));
+
+        const newNotifications = activePatientAppointments.map(appointment => ({
+            id: appointment.id,
+            message: `Tu cita de ${appointment.tipoCita} fue aprobada, nos vemos pronto el día ${appointment.fecha}!!`
+        }));
+
+        // Almacenar las notificaciones en el estado y localStorage
+        setNotifications([...notifications, ...newNotifications]);
+        localStorage.setItem('lastNotification', JSON.stringify(newNotifications[0]));
+
+        // Mostrar las notificaciones
+        setShowNotifications(true);
+
+        // Limpiar la variable después de un tiempo
+        setTimeout(() => {
+            setNotifications([]);
+            setShowNotifications(false);
+            localStorage.removeItem('lastNotification');
+        }, 5000);
     };
-
-
+    
 
     const toggleForm = () => {
         setFormVisible(!isFormVisible);
-        // Limpiar errores al mostrar u ocultar el formulario
         setError('');
     };
 
@@ -166,6 +208,7 @@ const Dashboard = () => {
         // Validar que se haya seleccionado una hora, una fecha, una autorización y una especialidad
         if (selectedSlot && selectedDate && authNum && selectedSpecialty) {
             const isAuthorized = await validateAuthorization();
+            const userId = localStorage.getItem('userId');
 
             // Validar la autorización
             if (isAuthorized) {
@@ -175,7 +218,7 @@ const Dashboard = () => {
                     hora: selectedSlot,
                     idAutorizacionFK: parseInt(authNum, 10),
                     tipoCita: selectedSpecialty,
-                    id_pacienteFK: 0,
+                    id_pacienteFK: parseInt(userId),
                     id_medicoFK: 0,
                     estado: "En espera"
                 };
@@ -193,12 +236,6 @@ const Dashboard = () => {
                     if (response.ok) {
                         // Obtener el ID de la cita registrada
                         const responseData = await response.json();
-                        const newAppointmentId = responseData.id;
-
-                        // Almacenar temporalmente el ID de la nueva cita
-                        setTemporaryAppointmentId(newAppointmentId);
-                        
-                        console.log(temporaryAppointmentId);
 
                         // Actualizar las citas registradas después de agendar la nueva cita
                         const updatedSlots = [...availableSlots, `${selectedDate} ${selectedSlot}`];
@@ -244,9 +281,6 @@ const Dashboard = () => {
         }
     };
 
-
-
-
     useEffect(() => {
         // Cuando el componente se monta, realiza la llamada a la API
         fetchBookedSlots();
@@ -279,8 +313,15 @@ const Dashboard = () => {
                     </button>
                     {showNotifications && (
                         <div className="notifications-popup">
-                            {/* Contenido de las notificaciones */}
-                            <p>{notificationMessage}</p>
+                            {notifications.length > 0 ? (
+                                // Mostrar notificaciones individuales
+                                notifications.map((notification) => (
+                                    <p key={notification.id}>{notification.message}</p>
+                                ))
+                            ) : (
+                                // Mostrar mensaje predeterminado si no hay notificaciones
+                                <p>No tienes notificaciones nuevas.</p>
+                            )}
                         </div>
                     )}
                 </div>

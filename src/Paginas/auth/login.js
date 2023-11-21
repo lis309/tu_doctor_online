@@ -33,6 +33,10 @@ const Login = () => {
     
                 if (response.data.length > 0) {
                     const user = response.data[0];
+
+                    // Almacena el ID del usuario en localStorage
+                    localStorage.setItem('userId', user.id);
+
                     // Verifica el rol del usuario
                     if (user.rol === 1) {
                         // Redirige al usuario con rol 1 a la ruta '/dashboardIPS'

@@ -10,6 +10,7 @@ const DashboardIPS = () => {
   const [selectedDoctors, setSelectedDoctors] = useState({});
   const [error, setError] = useState("");
   const [notificationMessage, setNotificationMessage] = useState('');
+  const [, setNotifications] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -36,37 +37,48 @@ const DashboardIPS = () => {
 
   const toggleNotifications = async () => {
     try {
-  
       const updatedAppointmentsResponse = await fetch("http://localhost:5000/Cita");
       const updatedAppointmentsData = await updatedAppointmentsResponse.json();
   
       const currentDate = new Date().toISOString().split("T")[0];
-      const filteredAppointments = [];
+      const filteredAppointments = updatedAppointmentsData.filter(
+        (appointment) => appointment.fecha >= currentDate && appointment.estado === "En espera"
+      );
   
-      for (const appointment of updatedAppointmentsData) {
-        if (appointment.fecha >= currentDate && appointment.estado === "En espera") {
-          filteredAppointments.push(appointment);
-        }
-      }
-
-      const hasNewAppointments = filteredAppointments.length > 0;
-      
-      // Mostrar notificaciones
-      setShowNotifications(hasNewAppointments);
+      // Mostrar notificaciones solo si no hay notificación actual
+      setShowNotifications(!showNotifications || (filteredAppointments.length > 0));
   
       // Mostrar mensaje adicional si hay nuevas citas
-      if (hasNewAppointments) {
-        setNotificationMessage('Tienes nuevas citas pendientes. ¡Revisa tu agenda!');
+      if (!showNotifications && filteredAppointments.length > 0) {
+        const newNotificationMessage = 'Tienes nuevas citas pendientes. ¡Revisa las citas agendadas!';
+        setNotificationMessage(newNotificationMessage);
+  
+        // Añadir la notificación al estado de notificaciones
+        const newNotification = { id: Date.now(), message: newNotificationMessage };
+        setNotifications([newNotification]);
+  
+        // Limpiar la variable después de un tiempo
+        setTimeout(() => {
+          setShowNotifications(false);
+        }, 5000);
       } else {
-        setShowNotifications(true);
-        // Mostrar el mensaje por defecto si no hay nuevas citas
+        // Si no hay nuevas citas, mostrar el mensaje predeterminado
         setNotificationMessage('No tienes nuevas citas pendientes.');
+  
+        // Añadir la notificación al estado de notificaciones
+        const newNotification = { id: Date.now(), message: 'No tienes nuevas citas pendientes.' };
+        setNotifications([newNotification]);
+  
+        // Limpiar la variable después de un tiempo
+        setTimeout(() => {
+          setNotificationMessage('');
+          setShowNotifications(false);
+        }, 5000);
       }
     } catch (error) {
       console.error('Error al obtener las citas:', error);
     }
   };
-  
 
   const toggleList = async () => {
     setListVisible(!isListVisible);
@@ -158,7 +170,7 @@ const DashboardIPS = () => {
           {showNotifications && (
             <div className="notifications-popup">
               {/* Contenido de las notificaciones */}
-              <p>{notificationMessage || 'No tienes notificaciones nuevas.'}</p>
+              <p>{notificationMessage}</p>
             </div>
           )}
         </div>
