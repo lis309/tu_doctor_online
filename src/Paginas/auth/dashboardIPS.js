@@ -105,18 +105,16 @@ const DashboardIPS = () => {
 
   const doctorsBySpecialty = (specialty) => {
     const filteredDoctors = doctors.filter((doctor) => doctor.especialidad === specialty);
-  
     console.log("Filtered Doctors:", filteredDoctors);
   
-    return [
-      ...filteredDoctors.map((doctor) => (
-        <option key={doctor.id} value={doctor.id}>
-          {doctor.nombre}
-        </option>
-      )),
-    ];
-  };
+    const options = filteredDoctors.map((doctor) => (
+      <option key={doctor.id} value={doctor.id}>
+        {doctor.nombre}
+      </option>
+    ));
   
+    return options;
+  };
 
   const approveAppointment = async (appointmentId) => {
     try {

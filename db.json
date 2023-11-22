@@ -82,6 +82,36 @@
       "id_medicoFK": 102,
       "estado": "Activa",
       "id": 2
+    },
+    {
+      "fecha": "2023-11-28",
+      "hora": "6:00 AM",
+      "idAutorizacionFK": 123456789,
+      "tipoCita": "Cardiología",
+      "id_pacienteFK": 2,
+      "id_medicoFK": 101,
+      "estado": "Activa",
+      "id": 3
+    },
+    {
+      "fecha": "2023-11-30",
+      "hora": "6:00 AM",
+      "idAutorizacionFK": 123456789,
+      "tipoCita": "Dermatología",
+      "id_pacienteFK": 2,
+      "id_medicoFK": 103,
+      "estado": "Activa",
+      "id": 4
+    },
+    {
+      "fecha": "2023-11-28",
+      "hora": "6:30 AM",
+      "idAutorizacionFK": 123456789,
+      "tipoCita": "Pediatría",
+      "id_pacienteFK": 2,
+      "id_medicoFK": 102,
+      "estado": "Activa",
+      "id": 5
     }
   ],
   "Autorizacion": [

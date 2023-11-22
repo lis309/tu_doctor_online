@@ -16,41 +16,45 @@ const Dashboard = () => {
     const [error, setError] = useState('');
     const [notifications, setNotifications] = useState([]);
     const [appointments, setAppointments] = useState([]);
-    const userId = localStorage.getItem('userId');
-    
+    const [userAppointments, setUserAppointments] = useState([]);
+    const [userId] = useState(localStorage.getItem('userId'));
+    const [isViewingAppointments, setIsViewingAppointments] = useState(false);
+
     useEffect(() => {
-        // Obtener todas las citas
         const fetchAppointments = async () => {
             try {
                 const response = await fetch("http://localhost:5000/Cita");
                 const appointmentsData = await response.json();
-    
+
                 if (response.ok) {
-                    setAppointments(appointmentsData);
-    
-                    // Filtrar citas con estado 'Activa' y del paciente actual
-                    const activePatientAppointments = appointmentsData.filter(appointment => (
-                        appointment.estado === 'Activa' && appointment.id_pacienteFK === parseInt(userId)
-                    ));
-    
-                    const newNotifications = activePatientAppointments.map(appointment => ({
-                        id: appointment.id,
-                        message: `Tu cita de ${appointment.tipoCita} fue aprobada, nos vemos pronto el día ${appointment.fecha}!!`
-                    }));
-    
-                    // Almacenar las notificaciones en el estado y localStorage
-                    setNotifications([...notifications, ...newNotifications]);
-                    localStorage.setItem('lastNotification', JSON.stringify(newNotifications[0]));
-    
-                    // Mostrar las notificaciones
-                    setShowNotifications(true);
-    
-                    // Limpiar la variable después de un tiempo
-                    setTimeout(() => {
-                        setNotifications([]);
+                    if (!appointmentsData || appointmentsData.length === 0) {
+                        console.log('No hay citas disponibles.');
+                    } else {
+                        setAppointments(appointmentsData);
+
                         setShowNotifications(false);
-                        localStorage.removeItem('lastNotification');
-                    }, 5000);
+
+                        const activePatientAppointments = appointmentsData.filter(appointment => (
+                            appointment.estado === 'Activa' && appointment.id_pacienteFK === parseInt(userId)
+                        ));
+
+                        const newNotifications = activePatientAppointments.map(appointment => ({
+                            id: appointment.id,
+                            message: `Tu cita de ${appointment.tipoCita} fue aprobada, nos vemos pronto el día ${appointment.fecha}!!`
+                        }));
+
+                        setNotifications(prevNotifications => [...prevNotifications, ...newNotifications]);
+                        const lastNotificationString = JSON.stringify(newNotifications[0]);
+                        localStorage.setItem('lastNotification', lastNotificationString);
+
+                        setShowNotifications(false);
+
+                        setTimeout(() => {
+                            setNotifications([]);
+                            setShowNotifications(false);
+                            localStorage.removeItem('lastNotification');
+                        }, 5000);
+                    }
                 } else {
                     console.error('Error al obtener las citas:', appointmentsData.message || 'Error desconocido');
                 }
@@ -58,26 +62,20 @@ const Dashboard = () => {
                 console.error('Error en la llamada a la API:', error);
             }
         };
-    
-        // Recuperar la última notificación almacenada en localStorage
+
         const lastNotificationString = localStorage.getItem('lastNotification');
-        console.log('lastNotificationString:', lastNotificationString); // Agrega este registro
-    
-        // Verificar si lastNotificationString no es undefined y no es null antes de intentar parsearlo
-        if (lastNotificationString !== undefined && lastNotificationString !== null) {
+        console.log('lastNotificationString:', lastNotificationString);
+
+        if (lastNotificationString && lastNotificationString !== 'undefined') {
             const lastNotification = JSON.parse(lastNotificationString);
-            
-            // Si hay una última notificación, mostrarla al cargar la página
             setNotifications([lastNotification]);
             setShowNotifications(true);
         }
-    
+
         fetchAppointments();
-    }, [userId, notifications]);
-    
+    }, [userId]);
 
     const toggleNotifications = () => {
-        // Filtrar citas con estado 'Activa' y del paciente actual
         const activePatientAppointments = appointments.filter(appointment => (
             appointment.estado === 'Activa' && appointment.id_pacienteFK === parseInt(userId)
         ));
@@ -87,24 +85,26 @@ const Dashboard = () => {
             message: `Tu cita de ${appointment.tipoCita} fue aprobada, nos vemos pronto el día ${appointment.fecha}!!`
         }));
 
-        // Almacenar las notificaciones en el estado y localStorage
-        setNotifications([...notifications, ...newNotifications]);
-        localStorage.setItem('lastNotification', JSON.stringify(newNotifications[0]));
+        const newNotification = newNotifications[newNotifications.length - 1];
 
-        // Mostrar las notificaciones
-        setShowNotifications(true);
+        if (newNotification) {
+            setNotifications([newNotification]);
+            localStorage.setItem('lastNotification', JSON.stringify(newNotification));
+            setShowNotifications(!showNotifications);
 
-        // Limpiar la variable después de un tiempo
-        setTimeout(() => {
-            setNotifications([]);
-            setShowNotifications(false);
-            localStorage.removeItem('lastNotification');
-        }, 5000);
+            if (showNotifications) {
+                setTimeout(() => {
+                    setNotifications([]);
+                    setShowNotifications(false);
+                    localStorage.removeItem('lastNotification');
+                }, 5000);
+            }
+        }
     };
-    
 
     const toggleForm = () => {
         setFormVisible(!isFormVisible);
+        setIsViewingAppointments(false); // Agregar esta línea para ocultar la lista al mostrar el formulario
         setError('');
     };
 
@@ -112,7 +112,6 @@ const Dashboard = () => {
         try {
             const response = await fetch('http://localhost:5000/Cita');
             const data = await response.json();
-
 
             if (Array.isArray(data)) {
                 const bookedSlots = data.map(slot => `${slot.fecha} ${slot.hora}`);
@@ -130,9 +129,7 @@ const Dashboard = () => {
             const response = await fetch('http://localhost:5000/Medico');
             const data = await response.json();
 
-
             if (Array.isArray(data)) {
-                // Obtener las especialidades de los médicos disponibles
                 const uniqueSpecialties = Array.from(new Set(data.map(medico => medico.especialidad)));
                 setSpecialties(uniqueSpecialties);
             } else {
@@ -157,34 +154,38 @@ const Dashboard = () => {
 
     const handleDateChange = (event) => {
         const selectedDate = event.target.value;
-        const currentDate = new Date(); // Obtener la fecha actual
+        const currentDate = new Date();
 
-        // Convertir la fecha seleccionada a un objeto de fecha
         const selectedDateObj = new Date(selectedDate);
 
-        // Verificar si la fecha seleccionada es anterior a la actual
         if (selectedDateObj < currentDate) {
-            // Mostrar un mensaje de error (puedes ajustar esto según tus necesidades)
             setError('No puedes seleccionar fechas anteriores a la actual.');
-
-            // Deshabilitar la selección de hora
             setIsSlotAvailable(false);
         } else {
-            // Limpiar el mensaje de error si la fecha es válida
             setError('');
-
-            // Habilitar todas las horas si la fecha es válida
             setIsSlotAvailable(true);
         }
 
-        // Actualizar la fecha seleccionada
         setSelectedDate(selectedDate);
     };
 
+    const fetchUserAppointments = async () => {
+        try {
+            const response = await fetch(`http://localhost:5000/Cita?id_pacienteFK=${userId}`);
+            const data = await response.json();
+    
+            if (response.ok) {
+                setUserAppointments(data);
+            } else {
+                console.error('Error al obtener las citas del paciente:', data.message || 'Error desconocido');
+            }
+        } catch (error) {
+            console.error('Error en la llamada a la API:', error);
+        }
+    };    
+
     const handleSlotSelect = (selectedSlot) => {
-        // Desmarcar la selección previa si existe
         setSelectedSlot((prevSelectedSlot) => (prevSelectedSlot === selectedSlot ? '' : selectedSlot));
-        // Establecer el formulario como inválido hasta que se haga clic en "Agendar Cita"
         setIsFormValid(false);
     };
 
@@ -198,21 +199,15 @@ const Dashboard = () => {
         setSelectedSpecialty(selectedSpecialty);
     };
 
-
     const handleAppointmentSubmit = async (event) => {
         event.preventDefault();
 
-        // Limpiar errores al intentar enviar el formulario
         setError('');
 
-        // Validar que se haya seleccionado una hora, una fecha, una autorización y una especialidad
         if (selectedSlot && selectedDate && authNum && selectedSpecialty) {
             const isAuthorized = await validateAuthorization();
-            const userId = localStorage.getItem('userId');
 
-            // Validar la autorización
             if (isAuthorized) {
-                // Construir el objeto de cita
                 const newAppointment = {
                     fecha: selectedDate,
                     hora: selectedSlot,
@@ -224,7 +219,6 @@ const Dashboard = () => {
                 };
 
                 try {
-                    // Realizar la llamada a la API para registrar la nueva cita
                     const response = await fetch('http://localhost:5000/Cita', {
                         method: 'POST',
                         headers: {
@@ -234,30 +228,18 @@ const Dashboard = () => {
                     });
 
                     if (response.ok) {
-                        // Obtener el ID de la cita registrada
                         const responseData = await response.json();
 
-                        // Actualizar las citas registradas después de agendar la nueva cita
                         const updatedSlots = [...availableSlots, `${selectedDate} ${selectedSlot}`];
                         setAvailableSlots(updatedSlots);
 
-                        // Limpiar la selección actual para permitir la selección de otra hora
                         setSelectedSlot('');
-
-                        // Limpiar el número de autorización y la especialidad
                         setAuthNum('');
                         setSelectedSpecialty('');
-
-                        // Limpiar la fecha seleccionada
                         setSelectedDate('');
-
-                        // Habilitar la opción para seleccionar otra hora después de agendar
                         setIsSlotAvailable(true);
-
-                        // Establecer el formulario como válido y sin errores
                         setIsFormValid(true);
 
-                        // Mostrar mensaje de notificación adicional si la cita está aprobada
                         if (responseData.estado === 'Activa') {
                             alert('Cita registrada con éxito y aprobada. ¡Nos vemos pronto!');
                         } else {
@@ -276,18 +258,15 @@ const Dashboard = () => {
             }
         } else {
             setError('Por favor, complete todos los campos del formulario');
-            // Establecer el formulario como inválido
             setIsFormValid(false);
         }
     };
 
     useEffect(() => {
-        // Cuando el componente se monta, realiza la llamada a la API
         fetchBookedSlots();
         fetchSpecialties();
     }, []);
 
-    // Función para obtener todas las horas disponibles
     const getAllSlots = () => {
         const startTime = new Date('2023-11-11T06:00:00');
         const endTime = new Date('2023-11-11T18:00:00');
@@ -304,6 +283,15 @@ const Dashboard = () => {
         return timeSlots;
     };
 
+    const toggleViewAppointments = () => {
+        setIsViewingAppointments(!isViewingAppointments);
+        setFormVisible(false); // Agregar esta línea para ocultar el formulario al mostrar la lista
+
+        if (!isViewingAppointments) {
+            fetchUserAppointments();
+        }
+    };
+
     return (
         <div className="container">
             <div className="header">
@@ -314,12 +302,10 @@ const Dashboard = () => {
                     {showNotifications && (
                         <div className="notifications-popup">
                             {notifications.length > 0 ? (
-                                // Mostrar notificaciones individuales
                                 notifications.map((notification) => (
                                     <p key={notification.id}>{notification.message}</p>
                                 ))
                             ) : (
-                                // Mostrar mensaje predeterminado si no hay notificaciones
                                 <p>No tienes notificaciones nuevas.</p>
                             )}
                         </div>
@@ -338,6 +324,9 @@ const Dashboard = () => {
                 </p>
                 <button id="scheduleButton" onClick={toggleForm}>
                     Agendar Cita
+                </button>
+                <button id="viewAppointmentsButton" onClick={toggleViewAppointments}>
+                    Ver Citas Agendadas
                 </button>
             </div>
             {isFormVisible && (
@@ -391,6 +380,22 @@ const Dashboard = () => {
                             Agendar Cita
                         </button>
                     </form>
+                </div>
+            )}
+            {isViewingAppointments && (
+                <div className="appointments-list-citas">
+                    <h2>Citas Agendadas</h2>
+                    {userAppointments.length > 0 ? (
+                        <ul>
+                            {userAppointments.map(appointment => (
+                                <li key={appointment.id}>
+                                    <strong>Fecha:</strong> {appointment.fecha} | <strong>Hora:</strong> {appointment.hora} | <strong>Especialidad:</strong> {appointment.tipoCita}
+                                </li>
+                            ))}
+                        </ul>
+                    ) : (
+                        <p>No tienes citas agendadas.</p>
+                    )}
                 </div>
             )}
         </div>

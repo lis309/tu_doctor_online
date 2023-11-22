@@ -106,7 +106,6 @@ body, html {
     margin-bottom: 20px;
     margin-left: -20px;
     padding-right: 50%;
-    z-index: 20; /* Asegura que el elemento 'welcome' esté por encima de otros elementos */
 }
 
 .welcome h2 {
@@ -139,6 +138,33 @@ body, html {
     box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.5); /* Un resplandor azul cuando el botón está enfocado */
 }
 
+#viewAppointmentsButton {
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    background-color: #4d82bc; /* Un verde agradable */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    outline: none; /* Elimina el contorno al hacer clic */
+    margin-left: 5%;
+    margin-top: 20px;
+}
+
+#viewAppointmentsButton:hover {
+    background-color: #4170a1; /* Un verde un poco más oscuro para el efecto hover */
+}
+
+#viewAppointmentsButton:active {
+    background-color: #4d82bc; /* Un verde aún más oscuro para cuando se hace clic */
+}
+
+#viewAppointmentsButton:focus {
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.5); /* Un resplandor azul cuando el botón está enfocado */
+}
+
 .appointments-list {
     align-items: right;
     margin-left: 220px;
@@ -147,6 +173,7 @@ body, html {
     padding: 20px;
     box-shadow: 0 0 10px rgba(0,0,0,0.1); /* Sombra alrededor del formulario */
     border-radius: 4px; /* Bordes redondeados para el formulario */
+    z-index: 1; /* Asegura que el elemento 'welcome' esté por encima de otros elementos */
 }
 
 .appointment-item {
@@ -189,3 +216,13 @@ body, html {
     background-color: #4170a1;
 }
 
+.appointments-list-citas {
+    align-items: right;
+    margin-left: 100px;
+    width: 300%; /* Establece un ancho fijo para el formulario */
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1); /* Sombra alrededor del formulario */
+    border-radius: 4px; /* Bordes redondeados para el formulario */
+    z-index: 1; /* Asegura que el elemento 'welcome' esté por encima de otros elementos */
+}
